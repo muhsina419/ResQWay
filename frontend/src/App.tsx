@@ -18,6 +18,11 @@ function App() {
           path="/dashboard"
           element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
         /> */}
+        {/* Protected Route */}
+        <Route
+          path="/dashboard"
+          element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
+        />
 
         {/* Catch-all redirect */}
         <Route
