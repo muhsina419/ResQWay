@@ -25,5 +25,17 @@ class AmbulanceViewSet(viewsets.ModelViewSet):
     permission_classes = [permissions.IsAuthenticated]
 
 
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from .models import Incident, Ambulance
+from django.db.models import Avg, Count
+
+@api_view(['GET'])
+def dashboard_stats(request):
+    return Response({
+        "total_incidents": Incident.objects.count(),
+        "avg_response_time": Incident.objects.aggregate(Avg('response_time'))['response_time__avg'],
+        "ambulances_busy": Ambulance.objects.filter(is_available=False).count()
+    })
 
 # Create your views here.
