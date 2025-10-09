@@ -32,3 +32,30 @@ class Ambulance(models.Model):
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
     status = models.CharField(max_length=20, default='idle')
+
+class Ambulance(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.JSONField()
+    is_available = models.BooleanField(default=True)
+
+class Hospital(models.Model):
+    name = models.CharField(max_length=100)
+    location = models.JSONField()
+    is_available = models.BooleanField(default=True)
+
+class Incident(models.Model):
+    location = models.JSONField()
+    status = models.CharField(max_length=50, default="Reported")
+    ambulance = models.ForeignKey(Ambulance, on_delete=models.SET_NULL, null=True)
+    hospital = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+class BloodBank(models.Model):
+    blood_type = models.CharField(max_length=3)
+    units_available = models.IntegerField()
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
+
+class OrganBank(models.Model):
+    organ_type = models.CharField(max_length=50)
+    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
+    is_available = models.BooleanField(default=True)
