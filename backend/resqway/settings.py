@@ -104,7 +104,11 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # CORS configuration
-CORS_ALLOWED_ORIGINS = [u.strip() for u in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if u.strip()]
+import os
+
+CORS_ALLOWED_ORIGINS = [
+    u.strip() for u in os.getenv("CORS_ALLOWED_ORIGINS", "").split(",") if u.strip()
+]
 
 # Celery configuration
 CELERY_BROKER_URL = 'redis://localhost:6379/0'
@@ -128,3 +132,7 @@ CHANNEL_LAYERS = {
         },
     },
 }
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
