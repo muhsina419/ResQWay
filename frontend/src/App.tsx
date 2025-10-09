@@ -1,7 +1,7 @@
 // src/App.tsx
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
-import Dashboard from "./pages/Dashboard";
+// import Dashboard from "./pages/Dashboard";
 import { getToken } from "./api/api";
 
 function App() {
@@ -13,6 +13,11 @@ function App() {
         {/* Public Route */}
         <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
 
+        {/* Protected Route
+        <Route
+          path="/dashboard"
+          element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
+        /> */}
         {/* Protected Route */}
         <Route
           path="/dashboard"
