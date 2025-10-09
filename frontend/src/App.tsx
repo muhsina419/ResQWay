@@ -1,7 +1,8 @@
 // src/App.tsx
+import React from "react";
 import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 import Login from "./pages/Login";
-// import Dashboard from "./pages/Dashboard";
+import SignUp from "./pages/SignUp";
 import { getToken } from "./api/api";
 
 function App() {
@@ -10,24 +11,20 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* Public Route */}
-        <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
-
-        {/* Protected Route
+        {/* Public Routes */}
         <Route
-          path="/dashboard"
-          element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
-        /> */}
-        {/* Protected Route */}
+          path="/login"
+          element={isLoggedIn ? <Navigate to="/signup" /> : <Login />}
+        />
         <Route
-          path="/dashboard"
-          element={isLoggedIn ? <Dashboard /> : <Navigate to="/login" />}
+          path="/signup"
+          element={isLoggedIn ? <Navigate to="/signup" /> : <SignUp />}
         />
 
         {/* Catch-all redirect */}
         <Route
           path="*"
-          element={<Navigate to={isLoggedIn ? "/dashboard" : "/login"} />}
+          element={<Navigate to={isLoggedIn ? "/signup" : "/login"} />}
         />
       </Routes>
     </Router>

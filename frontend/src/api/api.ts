@@ -1,89 +1,86 @@
-import axios from "axios";
+// ✅ Add this below your existing imports and exports
 
-// ------------------------
-// Types
-// ------------------------
-export interface User {
-  id: number;
-  username: string;
-}
+// ----------------------
+// Authentication Helpers
+// ----------------------
 
-export interface Incident {
-  id?: number;
-  location: [number, number];
-  description: string;
-  type: string;
-  status?: string;
-  ambulance?: number;
-  hospital?: number;
-}
-
-// ------------------------
-// Axios Instance
-// ------------------------
-const API_URL = "http://127.0.0.1:8000/api";
-
-export const api = axios.create({
-  baseURL: API_URL,
-});
-
-// ------------------------
-// Auth Functions
-// ------------------------
-export const login = async (username: string, password: string) => {
-  try {
-    const res = await api.post("/token/", { username, password });
-    localStorage.setItem("token", res.data.access);
-    return res.data;
-  } catch (err) {
-    throw new Error("Login failed: " + (err as any).response?.data?.detail || err);
-  }
+// Set token (store in localStorage)
+export const setToken = (token: string) => {
+  localStorage.setItem("token", token);
 };
 
-export const logout = () => {
+// Get token
+export const getToken = (): string | null => {
+  return localStorage.getItem("token");
+};
+
+// Clear token
+export const clearToken = () => {
   localStorage.removeItem("token");
 };
 
-export const getToken = () => localStorage.getItem("token");
+// ----------------------
+// Login API Integration
+// ----------------------
 
-// ------------------------
-// Incident Functions
-// ------------------------
-export const getIncidents = async (): Promise<Incident[]> => {
-  const token = getToken();
-  if (!token) throw new Error("User not authenticated");
+// Replace with your backend base URL
+const API_BASE_URL = "https://your-backend-url.com/api"; 
 
-  const res = await api.get("/incidents/", {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.data;
+// Login user with email + password
+export const loginUser = async (email: string, password: string) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/login`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email, password }),
+    });
+
+    if (!response.ok) {
+      throw new Error("Invalid credentials");
+    }
+
+    const data = await response.json();
+
+    if (data.token) {
+      setToken(data.token); // Save token on successful login
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Login failed:", error);
+    throw error;
+  }
 };
 
-export const reportIncident = async (incident: Incident): Promise<Incident> => {
-  const token = getToken();
-  if (!token) throw new Error("User not authenticated");
+// Register user with signup details
+export const registerUser = async (user: {
+  name: string;
+  email: string;
+  phone: string;
+  emergencyContact: string;
+  bloodType: string;
+}) => {
+  try {
+    const response = await fetch(`${API_BASE_URL}/register`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(user),
+    });
 
-  const res = await api.post("/incidents/", incident, {
-    headers: { Authorization: `Bearer ${token}` },
-  });
-  return res.data;
+    if (!response.ok) {
+      throw new Error("Registration failed");
+    }
+
+    const data = await response.json();
+
+    if (data.token) {
+      setToken(data.token); // Save token on successful registration
+    }
+
+    return data;
+  } catch (error) {
+    console.error("Registration failed:", error);
+    throw error;
+  }
 };
-
-// ------------------------
-// WebSocket for Real-time Updates
-// ------------------------
-export const connectIncidentWebSocket = (
-  onMessage: (incidentUpdate: Incident) => void
-) => {
-  const ws = new WebSocket("ws://127.0.0.1:8000/ws/incidents/");
-
-  ws.onopen = () => console.log("WebSocket connected to incidents");
-  ws.onmessage = (event) => {
-    const data = JSON.parse(event.data);
-    onMessage(data); // callback with updated incident
-  };
-  ws.onclose = () => console.log("WebSocket disconnected");
-  ws.onerror = (err) => console.error("WebSocket error:", err);
-
-  return ws; // returns WebSocket instance so you can close later
-};
+// ...existing code...

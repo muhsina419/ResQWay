@@ -1,27 +1,22 @@
-// src/pages/Login.tsx
-import { useState } from "react";
-import { login } from "../api/api";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { loginUser } from "../api/api";
 
-export default function Login() {
+import { Link } from "react-router-dom";
+
+const Login: React.FC = () => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    setError(null);
-
     try {
-      await login(username, password); // calls api.ts login
-      navigate("/dashboard"); // redirect on success
-    } catch (err: any) {
-      setError(err.message || "Login failed");
-    } finally {
-      setLoading(false);
+      await loginUser(email, password);
+      navigate("/dashboard");
+    } catch {
+      setError("Invalid email or password");
     }
   };
 
@@ -31,26 +26,37 @@ export default function Login() {
       style={{ backgroundColor: "#f8dddd" }}
     >
       <h1 className="text-3xl font-bold text-[#8b1d1d] mb-6">
-        Sign In to ResQWay
+        Login to ResQWay
       </h1>
 
-      <form className="bg-white rounded-lg shadow-md p-8 w-80">
+      <form
+        onSubmit={handleSubmit}
+        className="bg-white rounded-lg shadow-md p-8 w-full max-w-md"
+      >
+        {error && <p className="text-[#b22222] mb-4">{error}</p>}
+
         <input
           type="email"
           placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           className="w-full mb-4 p-3 border border-[#f2baba] rounded-md focus:outline-none focus:ring-2 focus:ring-[#b22222]"
+          required
         />
         <input
           type="password"
           placeholder="Password"
-          className="w-full mb-4 p-3 border border-[#f2baba] rounded-md focus:outline-none focus:ring-2 focus:ring-[#b22222]"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          className="w-full mb-6 p-3 border border-[#f2baba] rounded-md focus:outline-none focus:ring-2 focus:ring-[#b22222]"
+          required
         />
 
         <button
           type="submit"
-          className="w-full bg-[#b22222] text-white py-2 rounded-md hover:bg-[#991a1a] transition-all"
+          className="w-full bg-[#b22222] hover:bg-[#991a1a] text-white py-3 rounded-md transition-all font-semibold"
         >
-          Sign In
+          Login
         </button>
 
         <div className="text-sm text-[#8b1d1d] mt-3">
@@ -60,12 +66,14 @@ export default function Login() {
         </div>
 
         <div className="text-sm text-[#8b1d1d] mt-4">
-          Don’t have an account?{" "}
-          <a href="#" className="text-[#b22222] font-semibold hover:underline">
-            Create one
-          </a>
+            Don’t have an account?{" "}
+            <Link to="/signup" className="text-[#b22222] font-semibold hover:underline">
+                Create one
+            </Link>
         </div>
       </form>
     </div>
   );
-}
+};
+
+export default Login;
