@@ -6,10 +6,9 @@ import SignUp from "./pages/SignUp";
 import StatusTracker from "./pages/StatusTracker";
 import { getToken } from "./api/api";
 import Home from "./pages/Home";
-import Report from "./pages/Report"
+import Report from "./pages/Report"; // ✅ Keep this import
 
-// Temporary placeholder pages (replace later with your real ones)
-const Report = () => <div className="p-8 text-2xl">🆘 Report Emergency Page</div>;
+// Temporary placeholder pages (keep these if you haven't created them yet)
 const RequestBlood = () => <div className="p-8 text-2xl">🩸 Request Blood Page</div>;
 const Volunteer = () => <div className="p-8 text-2xl">🤝 Volunteer Signup Page</div>;
 const Profile = () => <div className="p-8 text-2xl">👤 Profile Page</div>;
@@ -20,7 +19,7 @@ function App() {
   return (
     <Router>
       <Routes>
-        {/* 🔹 Login & Signup use login check */}
+        {/* 🔹 Login & Signup (restricted when already logged in) */}
         <Route
           path="/login"
           element={isLoggedIn ? <Navigate to="/home" /> : <Login />}
@@ -30,7 +29,7 @@ function App() {
           element={isLoggedIn ? <Navigate to="/home" /> : <SignUp />}
         />
 
-        {/* 🔹 Publicly accessible routes */}
+        {/* 🔹 Public routes */}
         <Route path="/home" element={<Home />} />
         <Route path="/report" element={<Report />} />
         <Route path="/request-blood" element={<RequestBlood />} />
