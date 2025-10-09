@@ -1,16 +1,16 @@
 import os
+from django.core.asgi import get_asgi_application
 from channels.routing import ProtocolTypeRouter, URLRouter
 from channels.auth import AuthMiddlewareStack
-from django.core.asgi import get_asgi_application
-import api.routing  # your api routing
+import your_app.routing
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'resqway.settings')
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'your_project_name.settings')
 
 application = ProtocolTypeRouter({
     "http": get_asgi_application(),
     "websocket": AuthMiddlewareStack(
         URLRouter(
-            api.routing.websocket_urlpatterns
+            your_app.routing.websocket_urlpatterns
         )
     ),
 })
