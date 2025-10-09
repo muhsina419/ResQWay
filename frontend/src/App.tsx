@@ -1,11 +1,14 @@
-import React from 'react'
+import { Routes, Route } from "react-router-dom";
+import Hero from "./components/Hero";
+import SignIn from "./pages/SignIn";
 
 function App() {
   return (
-    <div>
-      
-    </div>
-  )
+    <Routes>
+      <Route path="/" element={<Hero />} />
+      <Route path="/signin" element={<SignIn />} />
+    </Routes>
+  );
 }
 
-export default App
+export default App;
