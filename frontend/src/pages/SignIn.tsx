@@ -1,30 +1,6 @@
-// src/pages/Login.tsx
-import { useState } from "react";
-import { login } from "../api/api";
-import { useNavigate } from "react-router-dom";
+import React from "react";
 
-export default function Login() {
-  const navigate = useNavigate();
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-  const [loading, setLoading] = useState(false);
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setLoading(true);
-    setError(null);
-
-    try {
-      await login(username, password); // calls api.ts login
-      navigate("/dashboard"); // redirect on success
-    } catch (err: any) {
-      setError(err.message || "Login failed");
-    } finally {
-      setLoading(false);
-    }
-  };
-
+const SignIn: React.FC = () => {
   return (
     <div
       className="flex flex-col items-center justify-center min-h-screen text-center"
@@ -68,4 +44,6 @@ export default function Login() {
       </form>
     </div>
   );
-}
+};
+
+export default SignIn;
