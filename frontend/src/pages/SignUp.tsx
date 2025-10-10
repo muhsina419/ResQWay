@@ -69,8 +69,8 @@ const SignUp: React.FC = () => {
         />
 
         <input
-          type="tel"
-          placeholder="Emergency Contact Number"
+          type="password"
+          placeholder="Password"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           className="w-full mb-4 p-3 border border-[#f2baba] rounded-md focus:outline-none focus:ring-2 focus:ring-[#b22222]"

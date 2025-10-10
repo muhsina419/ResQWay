@@ -126,22 +126,25 @@ const Home: React.FC = () => {
       </aside>
 
       {/* Main content */}
-      <main className="flex-1 p-8">
+      <main className="flex-1 p-8 relative">
         {/* Top Buttons */}
-        <div className="flex flex-wrap justify-end md:justify-start gap-4 mb-8">
-          {homeFeed.actions.map((action, idx) => (
-            <button
-              key={idx}
-              onClick={() => navigate(action.route)}
-              className="bg-pink-300 hover:bg-pink-400 text-black font-semibold py-2 px-4 rounded-xl"
-            >
-              {action.icon} {action.label}
-            </button>
-          ))}
+        <div className="flex flex-wrap gap-4 mb-8 items-center justify-start md:justify-between">
+          <div className="flex flex-wrap gap-4">
+            {homeFeed.actions.map((action, idx) => (
+              <button
+                key={idx}
+                onClick={() => navigate(action.route)}
+                className="bg-pink-300 hover:bg-pink-400 text-black font-semibold py-2 px-4 rounded-xl"
+              >
+                {action.icon} {action.label}
+              </button>
+            ))}
+          </div>
 
+          {/* Profile Icon */}
           <button
             onClick={() => navigate("/profile")}
-            className="bg-pink-300 hover:bg-pink-400 ml-60 p-2 rounded-full"
+            className="bg-pink-300 hover:bg-pink-400 p-2 rounded-full"
             title="Profile"
           >
             <svg
