@@ -54,6 +54,8 @@ import React, { useEffect, useState } from 'react';
 import { MapContainer, TileLayer, Marker, Polyline, Popup } from 'react-leaflet';
 import L from 'leaflet';
 import 'leaflet/dist/leaflet.css'
+import { mockDispatch } from '../data/mockDispatch.js';
+
 
 const ambulanceIcon = new L.Icon({
   iconUrl: '/ambulance.png', // Place this in your public folder
