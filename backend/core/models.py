@@ -1,24 +1,21 @@
 from django.contrib.auth.models import AbstractUser
 from django.db import models
+from django.conf import settings
 
 class User(AbstractUser):
-    ROLES = [
-        ('public', 'Public'),
-        ('hospital', 'Hospital'),
-        ('ambulance', 'Ambulance'),
-        ('volunteer', 'Volunteer'),
-        ('admin', 'Admin')
+    USER_TYPES = [
+        ('PublicUser', 'Public User'),
+        ('Ambulance', 'Ambulance User'),
+        ('Hospital', 'Hospital Staff'),
     ]
-    role = models.CharField(max_length=20, choices=ROLES, default='public')
-    phone = models.CharField(max_length=20, blank=True, null=True)
+    name = models.CharField(max_length=150, blank=True, null=True)
+    phone = models.CharField(max_length=15, blank=True, null=True)
+    bloodType = models.CharField(max_length=3, blank=True, null=True)
+    userType = models.CharField(max_length=20, choices=USER_TYPES, default='PublicUser')
 
-# class Incident(models.Model):
-#     reporter = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-#     latitude = models.FloatField()
-#     longitude = models.FloatField()
-#     description = models.TextField()
-#     status = models.CharField(max_length=20, default='reported')
-#     created_at = models.DateTimeField(auto_now_add=True)
+    def __str__(self):
+        return self.username
+
 
 class Hospital(models.Model):
     name = models.CharField(max_length=100)
@@ -27,64 +24,34 @@ class Hospital(models.Model):
     available_beds = models.IntegerField(default=0)
     location = models.CharField(max_length=255, null=True, blank=True, default="")
 
+    def __str__(self):
+        return self.name
+
+
 class Ambulance(models.Model):
     vehicle_id = models.CharField(max_length=50, unique=True)
-    driver = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+    driver = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     latitude = models.FloatField(null=True)
     longitude = models.FloatField(null=True)
     status = models.CharField(max_length=20, default='idle')
     location = models.CharField(max_length=255, null=True, blank=True, default="")
 
-# class Ambulance(models.Model):
-#     name = models.CharField(max_length=100)
-#     location = models.JSONField()
-#     is_available = models.BooleanField(default=True)
-    
+    def __str__(self):
+        return self.vehicle_id
 
-# class Hospital(models.Model):
-#     name = models.CharField(max_length=100)
-#     location = models.JSONField()
-#     is_available = models.BooleanField(default=True)
 
-# class Incident(models.Model):
-#     location = models.JSONField()
-#     status = models.CharField(max_length=50, default="Reported")
-#     ambulance = models.ForeignKey(Ambulance, on_delete=models.SET_NULL, null=True)
-#     hospital = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True)
-#     timestamp = models.DateTimeField(auto_now_add=True)
-#     created_at = models.DateTimeField(auto_now_add=True)
 class Incident(models.Model):
-    reporter = models.ForeignKey('User', null=True, on_delete=models.SET_NULL)
-
-    # ✅ make this field nullable + default so migration won’t break
+    reporter = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.SET_NULL)
     location = models.CharField(max_length=255, null=True, blank=True, default="")
-
     description = models.TextField(null=True, blank=True)
     status = models.CharField(max_length=30, default='reported')
-
-    # ✅ add a timestamp (if not already present)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return f"Incident {self.id} - {self.status}"
 
-class BloodBank(models.Model):
-    blood_type = models.CharField(max_length=3)
-    units_available = models.IntegerField()
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
-
-class OrganBank(models.Model):
-    organ_type = models.CharField(max_length=50)
-    hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
-    is_available = models.BooleanField(default=True)
-# backend/core/models.py
-from django.conf import settings
-# ... (existing imports)
-
-# Add near other models (Hospital, Ambulance, BloodBank, etc.)
 
 class Volunteer(models.Model):
-    # Optional relation to auth user (can be null for anonymous signups)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
     location = models.CharField(max_length=255, blank=True, null=True)
     phone = models.CharField(max_length=30, blank=True, null=True)
@@ -92,20 +59,19 @@ class Volunteer(models.Model):
     is_active = models.BooleanField(default=True)
 
     def __str__(self):
-        if self.user:
-            return f"Volunteer: {self.user.username}"
-        return f"Volunteer (id={self.id})"
+        return f"Volunteer: {self.user.username}" if self.user else f"Volunteer {self.id}"
+
 
 class BloodRequest(models.Model):
     patient_name = models.CharField(max_length=200)
-    hospital = models.CharField(max_length=255)   # simple string reference; you can later change to FK to Hospital
+    hospital = models.CharField(max_length=255)
     bystander_name = models.CharField(max_length=200, blank=True, null=True)
     contact_number = models.CharField(max_length=50)
     blood_type = models.CharField(max_length=3)
     requirement_date = models.DateField(null=True, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     fulfilled = models.BooleanField(default=False)
-    fulfilled_by = models.ForeignKey('Hospital', on_delete=models.SET_NULL, null=True, blank=True)  # optional
+    fulfilled_by = models.ForeignKey(Hospital, on_delete=models.SET_NULL, null=True, blank=True)
 
     def __str__(self):
         return f"BloodRequest {self.id} for {self.patient_name} ({self.blood_type})"

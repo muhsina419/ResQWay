@@ -5,17 +5,21 @@ import axios from "axios";
 // ------------------------
 export interface User {
   id: number;
-  username: string;
+  name: string;
+  email: string;
+  phone?: string;
+  emergencyContact?: string;
+  bloodType?: string;
+  userType: string;
 }
 
 export interface Incident {
   id?: number;
-  location: [number, number];
+  location: string;
   description: string;
-  type: string;
   status?: string;
-  ambulance?: number;
-  hospital?: number;
+  reporter?: number;
+  created_at?: string;
 }
 
 // ------------------------
@@ -30,42 +34,47 @@ export const api = axios.create({
 // ------------------------
 // Auth Functions
 // ------------------------
-export const login = async (username: string, password: string) => {
+export const login = async (email: string, password: string) => {
   try {
-    const res = await api.post("/token/", { username, password });
+    const res = await api.post("/token/", { username: email, password });
     localStorage.setItem("token", res.data.access);
     return res.data;
-  } catch (err) {
-    throw new Error("Login failed: " + (err as any).response?.data?.detail || err);
+  } catch (err: any) {
+    throw new Error(err.response?.data?.detail || "Login failed");
   }
 };
-// Your other API functions here
 
-export async function registerUser(userData: {
-  name: string;
-  email: string;
-  phone: string;
-  emergencyContact: string;
-  bloodType: string;
-  userType: string;
-}) {
-  // Replace with actual API call logic
-  // Example using fetch:
-  const response = await fetch("/api/register", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(userData),
-  });
-  if (!response.ok) {
-    throw new Error("Registration failed");
-  }
-  return response.json();
-}
 export const logout = () => {
   localStorage.removeItem("token");
 };
 
 export const getToken = () => localStorage.getItem("token");
+
+// ------------------------
+// Registration
+// ------------------------
+export const registerUser = async (userData: {
+  name: string;
+  email: string;
+  password: string;
+  phone?: string;
+  emergencyContact?: string;
+  bloodType?: string;
+  userType: string;
+}) => {
+  const res = await fetch(`${API_URL}/register/`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userData),
+  });
+
+  if (!res.ok) {
+    const errorData = await res.json();
+    throw new Error(errorData?.detail || "Registration failed");
+  }
+
+  return await res.json();
+};
 
 // ------------------------
 // Incident Functions
@@ -93,18 +102,16 @@ export const reportIncident = async (incident: Incident): Promise<Incident> => {
 // ------------------------
 // WebSocket for Real-time Updates
 // ------------------------
-export const connectIncidentWebSocket = (
-  onMessage: (incidentUpdate: Incident) => void
-) => {
+export const connectIncidentWebSocket = (onMessage: (incident: Incident) => void) => {
   const ws = new WebSocket("ws://127.0.0.1:8000/ws/incidents/");
 
   ws.onopen = () => console.log("WebSocket connected to incidents");
   ws.onmessage = (event) => {
     const data = JSON.parse(event.data);
-    onMessage(data); // callback with updated incident
+    onMessage(data);
   };
   ws.onclose = () => console.log("WebSocket disconnected");
   ws.onerror = (err) => console.error("WebSocket error:", err);
 
-  return ws; // returns WebSocket instance so you can close later
+  return ws;
 };

@@ -15,37 +15,28 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
-
-# urlpatterns = [
-#     path('admin/', admin.site.urls),
-# ]
-
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView
-from core.views import UserViewSet, IncidentViewSet, HospitalViewSet, AmbulanceViewSet
+from core.views import (
+    UserViewSet, IncidentViewSet, HospitalViewSet, AmbulanceViewSet,
+    RegisterView, join_volunteer, request_blood, request_ambulance
+)
 
 router = DefaultRouter()
 router.register('users', UserViewSet)
 router.register('incidents', IncidentViewSet)
 router.register('hospitals', HospitalViewSet)
 router.register('ambulances', AmbulanceViewSet)
-# backend/resqway/urls.py
-from core.views import UserViewSet, IncidentViewSet, HospitalViewSet, AmbulanceViewSet, request_ambulance
-from core.views import join_volunteer, request_blood   # <-- add this import
 
 urlpatterns = [
-    # API endpoints
+    path('admin/', admin.site.urls),
     path('api/', include(router.urls)),
+
+    path('api/register/', RegisterView.as_view(), name='register'),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
-    path('api/request-ambulance/', request_ambulance, name='request_ambulance'),
-
-    # NEW: volunteer and blood request endpoints
     path('api/join-volunteer/', join_volunteer, name='join_volunteer'),
     path('api/request-blood/', request_blood, name='request_blood'),
-
-    # Admin site
-    path('admin/', admin.site.urls),
+    path('api/request-ambulance/', request_ambulance, name='request_ambulance'),
 ]

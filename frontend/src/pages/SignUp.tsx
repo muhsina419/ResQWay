@@ -7,7 +7,7 @@ const SignUp: React.FC = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [emergencyContact, setEmergencyContact] = useState("");
+  const [password, setPassword] = useState("");
   const [bloodType, setBloodType] = useState("");
   const [userType, setUserType] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -15,7 +15,7 @@ const SignUp: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      await registerUser({ name, email, phone, emergencyContact, bloodType, userType });
+      await registerUser({ name, email, phone, password, bloodType, userType });
       navigate("/home"); // or wherever you want post-signup
     } catch (err: unknown) {
       if (err instanceof Error) {
@@ -71,8 +71,8 @@ const SignUp: React.FC = () => {
         <input
           type="tel"
           placeholder="Emergency Contact Number"
-          value={emergencyContact}
-          onChange={(e) => setEmergencyContact(e.target.value)}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
           className="w-full mb-4 p-3 border border-[#f2baba] rounded-md focus:outline-none focus:ring-2 focus:ring-[#b22222]"
           required
         />

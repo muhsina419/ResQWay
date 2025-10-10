@@ -44,7 +44,7 @@ const Volunteer: React.FC = () => {
           <button
             type="submit"
             disabled={loading}
-            className="bg-pink-400 hover:bg-pink-500 text-black font-semibold py-2 rounded-xl"
+            className="bg-red-400 hover:bg-red-700 text-black font-semibold py-2 rounded-xl"
           >
             {loading ? "Submitting..." : "Join Now"}
           </button>
