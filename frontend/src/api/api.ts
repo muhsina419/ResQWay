@@ -39,7 +39,28 @@ export const login = async (username: string, password: string) => {
     throw new Error("Login failed: " + (err as any).response?.data?.detail || err);
   }
 };
+// Your other API functions here
 
+export async function registerUser(userData: {
+  name: string;
+  email: string;
+  phone: string;
+  emergencyContact: string;
+  bloodType: string;
+  userType: string;
+}) {
+  // Replace with actual API call logic
+  // Example using fetch:
+  const response = await fetch("/api/register", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(userData),
+  });
+  if (!response.ok) {
+    throw new Error("Registration failed");
+  }
+  return response.json();
+}
 export const logout = () => {
   localStorage.removeItem("token");
 };

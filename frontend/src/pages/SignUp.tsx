@@ -4,22 +4,25 @@ import { registerUser } from "../api/api"; // hypothetical API function
 
 const SignUp: React.FC = () => {
   const navigate = useNavigate();
-
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
   const [emergencyContact, setEmergencyContact] = useState("");
   const [bloodType, setBloodType] = useState("");
-  const [userType, setUserType] = useState(""); // <-- new state
-  const [error, setError] = useState("");
+  const [userType, setUserType] = useState("");
+  const [error, setError] = useState<string | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
       await registerUser({ name, email, phone, emergencyContact, bloodType, userType });
-      navigate("/dashboard"); // or wherever you want post-signup
-    } catch {
-      setError("Failed to create account. Please try again.");
+      navigate("/home"); // or wherever you want post-signup
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Failed to create account. Please try again.");
+      }
     }
   };
 

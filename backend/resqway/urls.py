@@ -14,8 +14,8 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-# from django.contrib import admin
-# from django.urls import path
+from django.contrib import admin
+from django.urls import path
 
 # urlpatterns = [
 #     path('admin/', admin.site.urls),
@@ -31,9 +31,21 @@ router.register('users', UserViewSet)
 router.register('incidents', IncidentViewSet)
 router.register('hospitals', HospitalViewSet)
 router.register('ambulances', AmbulanceViewSet)
+# backend/resqway/urls.py
+from core.views import UserViewSet, IncidentViewSet, HospitalViewSet, AmbulanceViewSet, request_ambulance
+from core.views import join_volunteer, request_blood   # <-- add this import
 
 urlpatterns = [
+    # API endpoints
     path('api/', include(router.urls)),
     path('api/token/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
     path('api/token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('api/request-ambulance/', request_ambulance, name='request_ambulance'),
+
+    # NEW: volunteer and blood request endpoints
+    path('api/join-volunteer/', join_volunteer, name='join_volunteer'),
+    path('api/request-blood/', request_blood, name='request_blood'),
+
+    # Admin site
+    path('admin/', admin.site.urls),
 ]

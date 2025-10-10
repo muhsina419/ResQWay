@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 const Home: React.FC = () => {
   const navigate = useNavigate();
@@ -14,15 +14,15 @@ const Home: React.FC = () => {
     <div className="flex flex-col md:flex-row bg-pink-100 min-h-screen text-black font-serif">
       {/* Sidebar */}
       <aside className="w-full md:w-1/4 bg-pink-200 flex flex-col justify-between p-6">
-        <div>
-          <h1 className="text-3xl font-bold text-red-700 mb-8">ResQWay</h1>
-          <ul className="space-y-4 text-lg font-semibold">
-            <li>Resource Allocation</li>
-            <li>Status Tracking</li>
-            <li>Geolocation and Mapping</li>
-            <li>Response Teams</li>
-          </ul>
-        </div>
+         <div>
+      <h1 className="text-3xl font-bold text-red-700 mb-8">ResQWay</h1>
+      <ul className="space-y-4 text-lg font-semibold">
+        <li><Link to="/resource" className="hover:text-red-500">Resource Allocation</Link></li>
+        <li><Link to="/status-tracker" className="hover:text-red-500">Status Tracking</Link></li>
+        <li><Link to="/map" className="hover:text-red-500">Geolocation and Mapping</Link></li>
+        <li><Link to="/teams" className="hover:text-red-500">Response Teams</Link></li>
+      </ul>
+    </div>
 
         <div className="mt-10 bg-red-300 p-4 rounded-2xl text-black font-semibold">
           <p>Emergency Hotline</p>

@@ -39,7 +39,7 @@ const Hero: React.FC = () => {
         </p>
 
         <button
-          onClick={() => navigate("/signin")}
+          onClick={() => navigate("/login")}
           className="bg-[#b22222] hover:bg-[#991a1a] text-white px-8 py-3 rounded-full text-lg font-semibold transition-all duration-200 shadow-md hover:shadow-lg"
         >
           Get Started

@@ -1,3 +1,4 @@
+
 // // src/App.tsx
 // import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
 // import Login from "./pages/Login";
@@ -126,6 +127,8 @@ import Home from "./pages/Home";
 import Report from "./pages/Report";
 import Demo from "./pages/Demo";
 import { getToken } from "./api/api";
+import SignUp from "./pages/SignUp";
+import Hero from "./components/Hero";
 
 // Temporary placeholder pages
 const RequestBlood = () => <div className="p-8 text-2xl">🩸 Request Blood Page</div>;
@@ -138,8 +141,8 @@ function App() {
 
   return (
     <Routes>
-      <Route path="/login" element={isLoggedIn ? <Navigate to="/dashboard" /> : <Login />} />
-      <Route path="/dashboard" element={isLoggedIn ? <div className="p-8">Dashboard Placeholder</div> : <Navigate to="/login" />} />
+      <Route path="/login" element={isLoggedIn ? <Navigate to="/home" /> : <Login />} />
+      <Route path="/signup" element={<SignUp />}/>
       <Route path="/home" element={<Home />} />
       <Route path="/report" element={<Report />} />
       <Route path="/request-blood" element={<RequestBlood />} />
@@ -148,11 +151,12 @@ function App() {
       <Route path="/status-tracker" element={<StatusTracker />} />
       <Route path="/status-tracker/:vehicleId" element={<StatusTracker />} />
       <Route path="/demo" element={<Demo />} />
-      <Route path="/" element={<Navigate to="/home" />} />
+      <Route path="/" element={<Hero />} />
       <Route path="*" element={<Navigate to={isLoggedIn ? "/dashboard" : "/home"} />} />
     </Routes>
   );
 }
 
 export default App;
+
 

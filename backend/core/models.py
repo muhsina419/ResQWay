@@ -77,3 +77,35 @@ class OrganBank(models.Model):
     organ_type = models.CharField(max_length=50)
     hospital = models.ForeignKey(Hospital, on_delete=models.CASCADE)
     is_available = models.BooleanField(default=True)
+# backend/core/models.py
+from django.conf import settings
+# ... (existing imports)
+
+# Add near other models (Hospital, Ambulance, BloodBank, etc.)
+
+class Volunteer(models.Model):
+    # Optional relation to auth user (can be null for anonymous signups)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True)
+    location = models.CharField(max_length=255, blank=True, null=True)
+    phone = models.CharField(max_length=30, blank=True, null=True)
+    joined_at = models.DateTimeField(auto_now_add=True)
+    is_active = models.BooleanField(default=True)
+
+    def __str__(self):
+        if self.user:
+            return f"Volunteer: {self.user.username}"
+        return f"Volunteer (id={self.id})"
+
+class BloodRequest(models.Model):
+    patient_name = models.CharField(max_length=200)
+    hospital = models.CharField(max_length=255)   # simple string reference; you can later change to FK to Hospital
+    bystander_name = models.CharField(max_length=200, blank=True, null=True)
+    contact_number = models.CharField(max_length=50)
+    blood_type = models.CharField(max_length=3)
+    requirement_date = models.DateField(null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    fulfilled = models.BooleanField(default=False)
+    fulfilled_by = models.ForeignKey('Hospital', on_delete=models.SET_NULL, null=True, blank=True)  # optional
+
+    def __str__(self):
+        return f"BloodRequest {self.id} for {self.patient_name} ({self.blood_type})"
